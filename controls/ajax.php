@@ -16,7 +16,7 @@ function engine() {
 }
 
 function getControls() {
-	foreach (array("hscope") as $key) {
+	foreach (array("hscope","console") as $key) {
 		if (!file_exists(project."/controls/".$key.".php")) return false;
 		require_once(project."/controls/".$key.".php");
 		sn::cl($key);
