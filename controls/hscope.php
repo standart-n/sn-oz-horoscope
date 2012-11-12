@@ -16,13 +16,13 @@ function __construct() {
 
 function getResponse() {
 	if (file_exists(self::$path)) {
-		return self::getJsonFromFile();
+		return ajax::$url->callback."(".self::getJsonFromFile().");";
 	}
 	self::getHscope();
 	if (self::$actual) {
 		self::saveJsonToFile();
 	}
-	return json_encode(self::$response);
+	return ajax::$url->callback."(".json_encode(self::$response).");";
 	
 }
 

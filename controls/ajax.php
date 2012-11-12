@@ -11,8 +11,19 @@ function __construct() {
 function engine() {
 	self::$url=new def;
 	if (self::getControls()) {
-		echo hscope::getResponse();
+		if (self::checkParams(array("callback"))) {
+			echo hscope::getResponse();
+		}
 	}
+}
+
+function checkParams($ms) {
+	foreach ($ms as $key) {
+		if (!isset($_REQUEST[$key])) return false;
+		self::$url->$key=trim(strval($_REQUEST[$key]));
+		if (self::$url->$key=="") return false;
+	}
+	return true;
 }
 
 function getControls() {
