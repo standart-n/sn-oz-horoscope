@@ -5,7 +5,35 @@ public static $options;
 public static $url;	
 
 function __construct() {
-	echo "...";
+	self::engine();
 }
+
+function engine() {
+	self::$url=new def;
+	if (self::getControls()) {
+		if (self::checkParams(array("callback"))) {
+			echo hscope::getResponse();
+		}
+	}
+}
+
+function checkParams($ms) {
+	foreach ($ms as $key) {
+		if (isset($_REQUEST[$key])) {
+			self::$url->$key=trim(strval($_REQUEST[$key]));
+		}
+	}
+	return true;
+}
+
+function getControls() {
+	foreach (array("hscope","console") as $key) {
+		if (!file_exists(project."/controls/".$key.".php")) return false;
+		require_once(project."/controls/".$key.".php");
+		sn::cl($key);
+	}
+	return true;	
+}
+
 
 } ?>

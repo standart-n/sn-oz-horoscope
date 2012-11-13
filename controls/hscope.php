@@ -16,14 +16,24 @@ function __construct() {
 
 function getResponse() {
 	if (file_exists(self::$path)) {
-		return ajax::$url->callback."(".self::getJsonFromFile().");";
+		return self::getResponseString(self::getJsonFromFile());
 	}
 	self::getHscope();
 	if (self::$actual) {
 		self::saveJsonToFile();
 	}
-	return ajax::$url->callback."(".json_encode(self::$response).");";
+	return self::getResponseString(json_encode(self::$response));
 	
+}
+
+function getResponseString($s=null) {
+	if ($s) {
+		if (start::$url->callback) {
+			return start::$url->callback."(".$s.");";
+		} else {
+			return $s;
+		}
+	}	
 }
 
 function getHscope() { $data=""; $ms=array();
@@ -106,6 +116,9 @@ function getZodiacId($id) {
 }
 
 function getDataFromSite($url) { $data="";
+	if (self::$htype=="ra-project") {
+		file_get_contents("http://horoscope.ra-project.net/cron/import_rss.php");
+	}
 	if ($url) {
 		$data=file_get_contents($url);
 	}
