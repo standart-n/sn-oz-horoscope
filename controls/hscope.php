@@ -7,7 +7,7 @@ public static $path;
 
 
 function __construct() {
-	self::$htype="ra-project";
+	self::$htype="otvetplanet";
 	self::$actual=false;
 	self::$response=array();
 	self::$response['hscope']=array();
@@ -37,7 +37,7 @@ function getResponseString($s=null) {
 }
 
 function getHscope() { $data=""; $ms=array();
-	if ((self::$htype=="ra-project") || (self::$htype=="astroscope")) {
+	if ((self::$htype=="ra-project") || (self::$htype=="astroscope") || (self::$htype=="otvetplanet")) {
 		for ($i=0;$i<12;$i++) {
 			$data=self::getDataFromSite(self::getUrl($i+1));
 			$ms=self::parseData($data);
@@ -92,11 +92,19 @@ function parseData($data) { $ms=array(); $ar=array();
 			}
 			return false;
 		}
+		if (self::$htype=="otvetplanet") {
+			$data=preg_replace('/\r/','',$data);
+			$data=preg_replace('/\n/','',$data);
+			if (preg_match('/<div id="unpaid-horoscope-detail-text">(.*?)<script>/',$data,$description,PREG_OFFSET_CAPTURE)) {
+				$ms['description']=strval($description[1][0]);
+				return $ms;
+			}
+			return false;
+		}
 	}
 }
 
 function getZodiacId($id) {
-	if ((self::$htype=="ra-project") || (self::$htype=="astroscope")) {
 		switch ($id) {
 			case 1: return "oven"; break;
 			case 2: return "telec"; break;
@@ -111,7 +119,6 @@ function getZodiacId($id) {
 			case 11: return "vodoley"; break;
 			case 12: return "rubu"; break;
 		}
-	}
 	return false;
 }
 
@@ -130,7 +137,16 @@ function getDataFromSite($url) { $data="";
 				self::$actual=true;
 			}
 		}
-	}	
+	}
+	if (self::$htype=="otvetplanet") {
+		if (preg_match('/<div class="date-h" >(.*?)&nbsp;/',$data,$dt,PREG_OFFSET_CAPTURE)) {
+			$date=strval($dt[1][0]);
+			console::write($date);
+			if (date("j.n.Y")==$date) {
+				self::$actual=true;
+			}
+		}
+	}
 	return $data;
 }
 
@@ -152,6 +168,22 @@ function getUrl($id=1) {
 			case 10: return "http://astroscope.ru/rss_feed/capricorn.rss"; break;
 			case 11: return "http://astroscope.ru/rss_feed/aquarius.rss"; break;
 			case 12: return "http://astroscope.ru/rss_feed/pisces.rss"; break;			
+		}
+	}
+	if (self::$htype=="otvetplanet") {
+		switch ($id) {
+			case 1: return "http://otvetplanet.ru/horoscopes/free/aries/45114/"; break;
+			case 2: return "http://otvetplanet.ru/horoscopes/free/taurus/45120/"; break;
+			case 3: return "http://otvetplanet.ru/horoscopes/free/gemini/45126/"; break;
+			case 4: return "http://otvetplanet.ru/horoscopes/free/cancer/45132/"; break;
+			case 5: return "http://otvetplanet.ru/horoscopes/free/leo/45138/"; break;
+			case 6: return "http://otvetplanet.ru/horoscopes/free/virgo/45144/"; break;
+			case 7: return "http://otvetplanet.ru/horoscopes/free/libra/45150/"; break;
+			case 8: return "http://otvetplanet.ru/horoscopes/free/scorpio/45156/"; break;
+			case 9: return "http://otvetplanet.ru/horoscopes/free/sagittarius/45162/"; break;
+			case 10: return "http://otvetplanet.ru/horoscopes/free/capricorn/45168/"; break;
+			case 11: return "http://otvetplanet.ru/horoscopes/free/aquarius/45174/"; break;
+			case 12: return "http://otvetplanet.ru/horoscopes/free/pisces/45180/"; break;
 		}
 	}
 }
