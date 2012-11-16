@@ -15,6 +15,7 @@ function __construct() {
 }
 
 function getResponse() {
+	
 	if (file_exists(self::$path)) {
 		return self::getResponseString(self::getJsonFromFile());
 	}
@@ -23,6 +24,9 @@ function getResponse() {
 		self::saveJsonToFile();
 	}
 	return self::getResponseString(json_encode(self::$response));
+	
+	//return self::getSiteId($id);
+	//return self::getDays();
 	
 }
 
@@ -172,18 +176,18 @@ function getUrl($id=1) {
 	}
 	if (self::$htype=="otvetplanet") {
 		switch ($id) {
-			case 1: return "http://otvetplanet.ru/horoscopes/free/aries/45114/"; break;
-			case 2: return "http://otvetplanet.ru/horoscopes/free/taurus/45120/"; break;
-			case 3: return "http://otvetplanet.ru/horoscopes/free/gemini/45126/"; break;
-			case 4: return "http://otvetplanet.ru/horoscopes/free/cancer/45132/"; break;
-			case 5: return "http://otvetplanet.ru/horoscopes/free/leo/45138/"; break;
-			case 6: return "http://otvetplanet.ru/horoscopes/free/virgo/45144/"; break;
-			case 7: return "http://otvetplanet.ru/horoscopes/free/libra/45150/"; break;
-			case 8: return "http://otvetplanet.ru/horoscopes/free/scorpio/45156/"; break;
-			case 9: return "http://otvetplanet.ru/horoscopes/free/sagittarius/45162/"; break;
-			case 10: return "http://otvetplanet.ru/horoscopes/free/capricorn/45168/"; break;
-			case 11: return "http://otvetplanet.ru/horoscopes/free/aquarius/45174/"; break;
-			case 12: return "http://otvetplanet.ru/horoscopes/free/pisces/45180/"; break;
+			case 1: return "http://otvetplanet.ru/horoscopes/free/aries/".self::getSiteId($id)."/"; break;
+			case 2: return "http://otvetplanet.ru/horoscopes/free/taurus/".self::getSiteId($id)."/"; break;
+			case 3: return "http://otvetplanet.ru/horoscopes/free/gemini/".self::getSiteId($id)."/"; break;
+			case 4: return "http://otvetplanet.ru/horoscopes/free/cancer/".self::getSiteId($id)."/"; break;
+			case 5: return "http://otvetplanet.ru/horoscopes/free/leo/".self::getSiteId($id)."/"; break;
+			case 6: return "http://otvetplanet.ru/horoscopes/free/virgo/".self::getSiteId($id)."/"; break;
+			case 7: return "http://otvetplanet.ru/horoscopes/free/libra/".self::getSiteId($id)."/"; break;
+			case 8: return "http://otvetplanet.ru/horoscopes/free/scorpio/".self::getSiteId($id)."/"; break;
+			case 9: return "http://otvetplanet.ru/horoscopes/free/sagittarius/".self::getSiteId($id)."/"; break;
+			case 10: return "http://otvetplanet.ru/horoscopes/free/capricorn/".self::getSiteId($id)."/"; break;
+			case 11: return "http://otvetplanet.ru/horoscopes/free/aquarius/".self::getSiteId($id)."/"; break;
+			case 12: return "http://otvetplanet.ru/horoscopes/free/pisces/".self::getSiteId($id)."/"; break;
 		}
 	}
 }
@@ -194,6 +198,17 @@ function getJsonFromFile() {
 
 function saveJsonToFile() {	
 	file_put_contents(self::$path,json_encode(self::$response));
+}
+
+function getSiteId($id=1) {
+	return strval(45186+(self::getDays()*72)+(($id-1)*6));
+	
+}
+
+function getDays() {
+	$time=time()-mktime(0,0,0,11,16,2012);
+	$time=ceil($time/86400);
+	return (intval($time)-1);
 }
 
 } ?>
