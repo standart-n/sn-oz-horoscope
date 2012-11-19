@@ -128,7 +128,7 @@ function getSiteId($id=1) {
 }
 
 function getDays() {
-	$time=time()-mktime(0,0,0,11,16,2012);
+	$time=time()-mktime(0,0,0,11,19,2012);
 	$time=ceil($time/86400);
 	return (intval($time)-1);
 }
