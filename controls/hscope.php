@@ -4,10 +4,12 @@ public static $response;
 public static $htype;
 public static $actual;
 public static $path;
+public static $id;
 
 
 function __construct() {
 	self::$htype="otvetplanet";
+	self::$id=0;
 	self::$actual=false;
 	self::$response=array();
 	self::$response['hscope']=array();
@@ -18,6 +20,7 @@ function getResponse() {
 	if (file_exists(self::$path)) {
 		return self::getResponseString(self::getJsonFromFile());
 	}
+	self::getIdOfDay();
 	self::getHscope();
 	if (self::$actual) {
 		self::saveJsonToFile();
@@ -114,6 +117,20 @@ function getUrl($id=1) {
 	}
 }
 
+function getIdOfDay($id_ms=array()) {
+	$url="http://otvetplanet.ru/horoscopes/free/";
+	$s=file_get_contents($url);
+	if ($s!="") {
+		if (preg_match('/<a href="\/horoscopes\/free\/aries\/(.*?)\/" class="icon sign-ARIES"><\/a>/',$s,$id_ms,PREG_OFFSET_CAPTURE)) {
+			$id=strval($id_ms[1][0]);
+			console::write("id: ".$id);
+			if (intval($id>0)) {
+				self::$id=$id;
+			}
+		}
+	}	
+}
+
 function getJsonFromFile() {
 	return file_get_contents(self::$path);
 }
@@ -123,8 +140,11 @@ function saveJsonToFile() {
 }
 
 function getSiteId($id=1) {
-	return strval(46720+(self::getDays()*72)+(($id-1)*6));
-	
+	if (intval(self::$id)>0) {
+		return strval(self::$id+(($id-1)*6));
+	} else {
+		return strval(46720+(self::getDays()*72)+(($id-1)*6));
+	}	
 }
 
 function getDays() {
